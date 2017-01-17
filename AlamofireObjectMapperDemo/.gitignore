@@ -1,0 +1,99 @@
+st login: Tue Jan 17 11:16:47 on ttys007
+➜  ios-517-today git:(feature/swift3) ✗ ls -a
+.                     Podfile               dinner517             fastlane
+..                    Podfile.lock          dinner517.xcodeproj   ipa-build.sh
+.DS_Store             Pods                  dinner517.xcworkspace ipa-upload.sh
+.git                  README.md             dinner517Tests        xcodeshell
+.gitignore            build_cmd.sh          export_cmd.sh
+➜  ios-517-today git:(feature/swift3) ✗ vim .gitignore 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+
+## Build generated
+build/
+DerivedData
+
+## Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+
+## Other
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcscmblueprint
+
+## Obj-C/Swift specific
+*.hmap
+*.ipa
+
+# CocoaPods
+#
+# We recommend against adding the Pods directory to your .gitignore. However
+# you should judge for yourself, the pros and cons are mentioned at:
+# http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
+#
+Pods/
+Podfile.lock
+
+# Carthage
+#
+# Add this line if you want to avoid checking in source code from Carthage dependencies.
+# Carthage/Checkouts
+
+Carthage/Build
+
+# Shell scripts
+*.sh
+".gitignore" 59L, 1053C
+
