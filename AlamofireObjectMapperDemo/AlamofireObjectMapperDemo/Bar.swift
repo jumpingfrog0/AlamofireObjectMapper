@@ -1,7 +1,7 @@
-//  User.swift
+//  Bar.swift
 //  AlamofireObjectMapperDemo
 //
-//  Created by jumpingfrog0 on 11/01/2017.
+//  Created by jumpingfrog0 on 20/01/2017.
 //
 //
 //  Copyright (c) 2017 Jumpingfrog0 LLC
@@ -27,41 +27,16 @@
 
 import Foundation
 import ObjectMapper
-import Realm
 import RealmSwift
 
-class User: Object, Mappable {
-    
-    dynamic var name: String?
-    var age = RealmOptional<Int>()
-    var goods: List<Goods> = List<Goods>()
-//    var age: Int? // wrong, can't be persisted
-//    var goods: [Goods]? // wrong, can't be persisted
-//    var goods: List<Goods>()? // wrong, can't be persisted
+class Bar: Object, Mappable {
+    dynamic var bar: String?
     
     required convenience init?(map: Map) {
         self.init()
     }
     
-    override class func primaryKey() -> String? {
-        return "name"
-    }
-    
     func mapping(map: Map) {
-        name <- map["name"]
-        age <- (map["age"], NumericTransform<Int>())
-        goods <- (map["goods"], ListTransform<Goods>())
-    }
-    
-    func save() -> Bool {
-        let realm = try! Realm()
-        do {
-            try realm.write {
-                realm.add(self, update: true)
-            }
-            return true
-        } catch {
-            return false
-        }
+        bar <- map["bar"]
     }
 }

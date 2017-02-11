@@ -190,59 +190,64 @@ extension DataRequest {
     private func print<T>(data: Data, value: T?, response: HTTPURLResponse?, error: Error?) {
         
         #if DEBUG
-        let jsonString = String(data: data, encoding: String.Encoding.utf8)
-        
-        if let _ = value {
-            
-            // Request success
-            jf_print("\n================================ HTTP REQUEST SUCCESS BEGIN ================================\n\n"
-                + "REQUEST = \(description)\n\n"
-                + "CURL = \(debugDescription)\n\n"
-                + "RESPONSE = \(response)\n\n"
-                + "JSON = \(jsonString!)\n\n"
-                + "================================ HTTP REQUEST SUCCESS END ================================\n"
-            )
-        } else {
-            
-            // Unknown error
-            guard let error = error as? OMError else {
-                jf_print("\n================================ HTTP REQUEST FAIL BEGIN ================================\n"
-                    + "REQUEST = \(description)\n\n"
-                    + "CURL = \(debugDescription)\n\n"
-                    + "RESPONSE = \(response)\n\n"
-                    + "ERROR TYPE : Unknown error\n\n"
-                    + "RESPONSE ERROR = Unknown error\n\n"
-                    + "================================ HTTP REQUEST FAIL END ================================\n"
-                )
-                return
+            do {
+                let jsonObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted)
+                let jsonString = String(data: jsonData, encoding: .utf8)
+                
+                if let _ = value {
+                    
+                    // Request success
+                    jf_print("\n================================ HTTP REQUEST SUCCESS BEGIN ================================\n\n"
+                        + "REQUEST = \(description)\n\n"
+                        + "CURL = \(debugDescription)\n\n"
+                        + "RESPONSE = \(response)\n\n"
+                        + "JSON = \(jsonString!)\n\n"
+                        + "================================ HTTP REQUEST SUCCESS END ================================\n"
+                    )
+                } else {
+                    
+                    // Unknown error
+                    guard let error = error as? OMError else {
+                        jf_print("\n================================ HTTP REQUEST FAIL BEGIN ================================\n"
+                            + "REQUEST = \(description)\n\n"
+                            + "CURL = \(debugDescription)\n\n"
+                            + "RESPONSE = \(response)\n\n"
+                            + "ERROR TYPE : Unknown error\n\n"
+                            + "RESPONSE ERROR = Unknown error\n\n"
+                            + "================================ HTTP REQUEST FAIL END ================================\n"
+                        )
+                        return
+                    }
+                    
+                    if let _ = error.serviceError {
+                        
+                        // Service error
+                        jf_print("\n================================ HTTP REQUEST FAIL BEGIN ================================\n"
+                            + "REQUEST = \(description)\n\n"
+                            + "CURL = \(debugDescription)\n\n"
+                            + "RESPONSE = \(response)\n\n"
+                            + "ERROR TYPE : Service error\n\n"
+                            + "RESPONSE ERROR = \(jsonString!)\n\n"
+                            + "================================ HTTP REQUEST FAIL END ================================\n"
+                        )
+                    } else {
+                        
+                        // Network or parsing error
+                        jf_print("\n================================ HTTP REQUEST FAIL BEGIN ================================\n"
+                            + "REQUEST = \(description)\n\n"
+                            + "CURL = \(debugDescription)\n\n"
+                            + "RESPONSE = \(response)\n\n"
+                            + "ERROR TYPE : Network or parsing error\n\n"
+                            + "RESPONSE ERROR = \(error.errorDescription)\n\n"
+                            + "JSON = \(jsonString!)\n\n"
+                            + "================================ HTTP REQUEST FAIL END ================================\n"
+                        )
+                    }
+                }
+            } catch {
+                
             }
-            
-            if let _ = error.serviceError {
-                
-                // Service error
-                jf_print("\n================================ HTTP REQUEST FAIL BEGIN ================================\n"
-                    + "REQUEST = \(description)\n\n"
-                    + "CURL = \(debugDescription)\n\n"
-                    + "RESPONSE = \(response)\n\n"
-                    + "ERROR TYPE : Service error\n\n"
-                    + "RESPONSE ERROR = \(jsonString!)\n\n"
-                    + "================================ HTTP REQUEST FAIL END ================================\n"
-                )
-            } else {
-                
-                // Network or parsing error
-                jf_print("\n================================ HTTP REQUEST FAIL BEGIN ================================\n"
-                    + "REQUEST = \(description)\n\n"
-                    + "CURL = \(debugDescription)\n\n"
-                    + "RESPONSE = \(response)\n\n"
-                    + "ERROR TYPE : Network or parsing error\n\n"
-                    + "RESPONSE ERROR = \(error.errorDescription)\n\n"
-                    + "JSON = \(jsonString!)\n\n"
-                    + "================================ HTTP REQUEST FAIL END ================================\n"
-                )
-                
-            }
-        }
         #endif
     }
 }

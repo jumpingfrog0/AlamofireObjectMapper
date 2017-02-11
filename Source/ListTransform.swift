@@ -1,7 +1,7 @@
-//  User.swift
+//  ListTransform.swift
 //  AlamofireObjectMapperDemo
 //
-//  Created by jumpingfrog0 on 11/01/2017.
+//  Created by jumpingfrog0 on 19/01/2017.
 //
 //
 //  Copyright (c) 2017 Jumpingfrog0 LLC
@@ -27,41 +27,55 @@
 
 import Foundation
 import ObjectMapper
-import Realm
 import RealmSwift
 
-class User: Object, Mappable {
+public struct ListTransform<T: RealmSwift.Object>: TransformType where T: Mappable {
     
-    dynamic var name: String?
-    var age = RealmOptional<Int>()
-    var goods: List<Goods> = List<Goods>()
-//    var age: Int? // wrong, can't be persisted
-//    var goods: [Goods]? // wrong, can't be persisted
-//    var goods: List<Goods>()? // wrong, can't be persisted
+    public init() { }
     
-    required convenience init?(map: Map) {
-        self.init()
-    }
+    public typealias Object = List<T>
+    public typealias JSON = Array<Any>
     
-    override class func primaryKey() -> String? {
-        return "name"
-    }
-    
-    func mapping(map: Map) {
-        name <- map["name"]
-        age <- (map["age"], NumericTransform<Int>())
-        goods <- (map["goods"], ListTransform<Goods>())
-    }
-    
-    func save() -> Bool {
-        let realm = try! Realm()
-        do {
-            try realm.write {
-                realm.add(self, update: true)
-            }
-            return true
-        } catch {
-            return false
+    public func transformFromJSON(_ value: Any?) -> List<T>? {
+        if let objects = Mapper<T>().mapArray(JSONObject: value) {
+            let list = List<T>()
+            list.append(objectsIn: objects)
+            return list
         }
+        return nil
+    }
+    
+    public func transformToJSON(_ value: Object?) -> JSON? {
+        return value?.flatMap { $0.toJSON() }
     }
 }
+
+public struct NumericTransform<T: RealmOptionalType>: TransformType {
+    
+    public init() { }
+    
+    public typealias Object = RealmOptional<T>
+    public typealias JSON = T
+    
+    public func transformFromJSON(_ value: Any?) -> RealmOptional<T>? {
+        return RealmOptional(value as? T)
+    }
+    
+    public func transformToJSON(_ value: Object?) -> JSON? {
+        return value?.value
+    }
+}
+
+public final class RealmStringObject: Object {
+    public dynamic var value: String = ""
+}
+
+public final class RealmIntObject: Object {
+    public dynamic var value: Int = 0
+}
+
+public final class RealmBoolObject: Object {
+    public dynamic var value: Bool = false
+}
+
+

@@ -58,11 +58,11 @@ public class AuthorizationHandler: RequestAdapter, RequestRetrier {
     // MARK: - RequestAdapter
     public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
         var urlRequest = urlRequest
-        let token = AuthorizationHandler.getAuthorizationToken()
-        
-        // FIXME: fixing hard code access token key
-        // Please change your access token key
-        urlRequest.setValue("\(token)", forHTTPHeaderField: HttpHeaderFields.AuthorizationToken)
+        if let token = AuthorizationHandler.getAuthorizationToken() {
+            // FIXME: fixing hard code access token key
+            // Please change your access token key
+            urlRequest.setValue("\(token)", forHTTPHeaderField: HttpHeaderFields.AuthorizationToken)
+        }
         return urlRequest
     }
     
@@ -101,7 +101,6 @@ public class AuthorizationHandler: RequestAdapter, RequestRetrier {
                     
                     AuthorizationHandler.saveRefreshToken(refreshToken)
                     AuthorizationHandler.saveAuthorizationToken(accessToken)
-                    jf_print("xxxxxxxx")
                 }
                 
                 self.requestsToRetry.forEach { $0(succeeded, 0.0) }

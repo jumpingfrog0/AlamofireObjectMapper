@@ -49,6 +49,8 @@ enum APIRouter: URLRequestConvertible {
     case illegalAccessTokenError
     case illegalRefreshTokenError
     case refreshToken(parameters: Parameters)
+    case getFoobar
+    case getAllStores
     
     // MARK: - Method
     var method: HTTPMethod {
@@ -80,6 +82,10 @@ enum APIRouter: URLRequestConvertible {
             return .get
         case .refreshToken(_):
             return .get
+        case .getFoobar:
+            return .get
+        case .getAllStores:
+            return .get
         }
     }
     
@@ -105,13 +111,17 @@ enum APIRouter: URLRequestConvertible {
         case .uploadFile(let module):
             return "/upload/" + module.rawValue
         case .error:
-            return "error"
+            return "/error"
         case .illegalAccessTokenError:
-            return "illegalAccessTokenError"
+            return "/illegalAccessTokenError"
         case .illegalRefreshTokenError:
-            return "illegalRefreshTokenError"
+            return "/illegalRefreshTokenError"
         case .refreshToken(_):
-            return "refreshToken"
+            return "/refreshToken"
+        case .getFoobar:
+            return "/foobar"
+        case .getAllStores:
+            return "/stores"
         }
     }
     
@@ -121,8 +131,9 @@ enum APIRouter: URLRequestConvertible {
         
         var urlRequest = URLRequest(url: url.appendingPathComponent(path))
         urlRequest.httpMethod = method.rawValue
-        let token = AuthorizationHandler.getAuthorizationToken()
-        urlRequest.setValue("\(token)", forHTTPHeaderField: HttpHeaderFields.AuthorizationToken)
+        if let token = AuthorizationHandler.getAuthorizationToken() {
+            urlRequest.setValue("\(token)", forHTTPHeaderField: HttpHeaderFields.AuthorizationToken)
+        }
         urlRequest.setValue("1", forHTTPHeaderField: HttpHeaderFields.ErrorDetail)
         
         switch self {

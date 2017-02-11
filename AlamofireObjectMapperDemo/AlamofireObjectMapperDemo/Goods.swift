@@ -1,7 +1,7 @@
-//  User.swift
+//  Goods.swift
 //  AlamofireObjectMapperDemo
 //
-//  Created by jumpingfrog0 on 11/01/2017.
+//  Created by jumpingfrog0 on 19/01/2017.
 //
 //
 //  Copyright (c) 2017 Jumpingfrog0 LLC
@@ -30,38 +30,48 @@ import ObjectMapper
 import Realm
 import RealmSwift
 
-class User: Object, Mappable {
+//enum PaymentMethod: Int {
+//    case cash = 0
+//    case creditCard = 1
+//    
+//    func toString() -> String {
+//        switch self {
+//        case .cash:
+//            return "Cash"
+//        case .creditCard:
+//            return "Card"
+//        }
+//    }
+//}
+
+class Goods: Object, Mappable {
     
-    dynamic var name: String?
-    var age = RealmOptional<Int>()
-    var goods: List<Goods> = List<Goods>()
-//    var age: Int? // wrong, can't be persisted
-//    var goods: [Goods]? // wrong, can't be persisted
-//    var goods: List<Goods>()? // wrong, can't be persisted
+    dynamic var name: String = ""
+    dynamic var price: Int = 0
     
-    required convenience init?(map: Map) {
-        self.init()
-    }
+    private dynamic var stateRaw = 0
+//    var state: PaymentMethod {
+//        return PaymentMethod(rawValue: stateRaw) ?? .cash
+//    }
+//    var states: List<PaymentMethod>?
     
     override class func primaryKey() -> String? {
         return "name"
     }
     
-    func mapping(map: Map) {
-        name <- map["name"]
-        age <- (map["age"], NumericTransform<Int>())
-        goods <- (map["goods"], ListTransform<Goods>())
+    required convenience init?(map: Map) {
+        self.init()
     }
     
-    func save() -> Bool {
-        let realm = try! Realm()
-        do {
-            try realm.write {
-                realm.add(self, update: true)
-            }
-            return true
-        } catch {
-            return false
-        }
+    func mapping(map: Map) {
+        name <- map["name"]
+        price <- map["price"]
+        stateRaw <- map["state"]
+    }
+    
+    convenience init(name: String, price: Int) {
+        self.init()
+        self.name = name
+        self.price = price
     }
 }

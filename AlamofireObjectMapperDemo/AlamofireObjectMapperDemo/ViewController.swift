@@ -29,6 +29,7 @@
 import UIKit
 import ObjectMapper
 import Alamofire
+import RealmSwift
 
 class ViewController: UIViewController {
 
@@ -41,7 +42,10 @@ class ViewController: UIViewController {
 //        uploadRequest()
 //        errorRequest()
         
-        reauthRequest()
+//        reauthRequest()
+//        test()
+//        realmTest()
+        getStores()
     }
     
     func collectionRequest() {
@@ -177,7 +181,92 @@ class ViewController: UIViewController {
             jf_print("handle service error: \(serviceError.message)")
         })
     }
+    
+    func test() {
+        let a = "2.2.0"
+        let b = "2.1.0"
+        
+        switch a.compare(b) {
+        case .orderedAscending:
+            jf_print("asc")
+        case .orderedDescending:
+            jf_print("desc")
+        default:
+            break
+        }
+    }
 
+    func realmTest() {
+        
+        _ = CollectionRequest(URLRequest: APIRouter.getFoobar)
+            .load(willStart: {
+                
+            }, didStop: { 
+                
+            }, successHandler: { (foobar: [FooBar]?) in
+                
+                jf_print(foobar)
+                
+                let a = foobar
+                print(a)
+                
+//                if (a == FooBar) {
+//                    
+//                }
+                
+//                if foobar!.save() {
+//                    jf_print("save succeeded.")
+//                    
+//                } else {
+//                    jf_print("save failed.")
+//                }
+                
+            }, failHandler: { (error: OMError?) in
+                
+            })
+        
+//        _ = ObjectRequest(URLRequest: APIRouter.getUser)
+//            .load(willStart: {
+//                
+//            }, didStop: {
+//                
+//            }, successHandler: { (user: User?) in
+//                
+//                jf_print(user)
+//                jf_print(user?.goods)
+//                jf_print(user?.goods.isEmpty)
+//                
+//                if user!.save() {
+//                    jf_print("save succeeded.")
+//                    
+//                } else {
+//                    jf_print("save failed.")
+//                }
+//                
+//            }, failHandler: { (error: OMError?) in
+//                
+//            })
+    }
+    
+    func getStores() {
+        _ = CollectionRequest(URLRequest: APIRouter.getAllStores).load(
+            willStart: { () -> Void in
+                
+        }, didStop: { () -> Void in
+            
+        }, successHandler: { (stores: [Store]?) -> Void in
+            
+            let a = stores
+            jf_print(a)
+            
+            jf_print(stores?[0])
+            jf_print(stores?[1])
+            jf_print(stores)
+            
+        }, failHandler: { (error: OMError?) -> Void in
+            
+        })
+    }
 }
 
 
